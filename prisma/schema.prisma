@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id                String       @id @default(cuid())
+  name              String?      // Nom de l'utilisateur
+  email             String?      @unique // Email de l'utilisateur
+  emailVerified     DateTime?    @map("email_verified") // Date de vérification de l'email
+  image             String?      // Photo de profil de l'utilisateur
+  password          String       // Mot de passe de l'utilisateur
+  role              Role         @default(STUDENT) // Rôle de l'utilisateur
+  plan              Plan         @default(FREE) // Plan d'abonnement de l'utilisateur
+  createdAt         DateTime     @default(now()) // Date d'inscription de l'utilisateur
+  lastLogin         DateTime?    // Date de dernière connexion de l'utilisateur
+  profilePicture    String?      // Photo de profil de l'utilisateur
+  coursesFollowed   CourseFollowed[]
+  comments          Comment[]
+  likes             Like[]
+  friends           User[]       @relation("UserFriends")
+  friendOf          User[]       @relation("UserFriends")
+  sentMessages      Message[]    @relation("SentMessages")
+  receivedMessages  Message[]    @relation("ReceivedMessages")
+  notifications     Notification[]
+  accounts          Account[]
+
+  @@map("users")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id") // Référence à l'utilisateur
+  type               String  // Type de compte (par exemple, OAuth)
+  provider           String  // Nom du fournisseur (par exemple, Google)
+  providerAccountId  String  @map("provider_account_id") // ID du compte chez le fournisseur
+  refresh_token      String? @db.Text // Token de rafraîchissement
+  access_token       String? @db.Text // Token d'accès
+  expires_at         Int?    // Expiration du token
+  token_type         String? // Type de token
+  scope              String? // Portée du token
+  id_token           String? @db.Text // ID token
+  session_state      String? // État de la session
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+
+model VerificationToken {
+  email String @unique  // Identifiant (par exemple, email)
+  token      String // Token de vérification
+  expires    DateTime // Date d'expiration du token
+
+   @@unique([email, token])
+  @@map("verificationtokens")
+}
+model VesetEmailToken {
+  email String @unique // Identifiant (par exemple, email)
+  token      String // Token de vérification
+  expires    DateTime // Date d'expiration du token
+
+  @@unique([email, token])
+  @@map("VesetEmailToken")
+}
+
+enum Role {
+  ADMIN   // Administrateur
+  INSTRUCTOR  // Instructeur
+  STUDENT // Étudiant
+}
+
+enum Plan {
+  FREE // Plan gratuit
+  PREMIUM // Plan premium
+}
+
+model Course {
+  id                String       @id @default(cuid())
+  title             String       // Titre du cours
+  description       String       // Description du cours
+  content           String       // Contenu du cours
+  isFree            Boolean      @default(true) // Le cours est-il gratuit
+  price             Float?       // Prix du cours (pour les cours premium)
+  category          String       // Catégorie du cours
+  level             String       // Niveau du cours
+  comments          Comment[]
+  likes             Like[]
+  photo1            String?      // Photo optionnelle du cours 1
+  photo2            String?      // Photo optionnelle du cours 2
+  photo3            String?      // Photo optionnelle du cours 3
+  followedBy        CourseFollowed[]
+
+  @@map("courses")
+}
+
+model CourseFollowed {
+  id                String       @id @default(cuid())
+  userId            String       // ID de l'utilisateur
+  user              User         @relation(fields: [userId], references: [id])
+  courseId          String       // ID du cours
+  course            Course       @relation(fields: [courseId], references: [id])
+  isCompleted       Boolean      @default(false) // Le cours est-il terminé
+  startDate         DateTime     @default(now()) // Date de début du cours
+  endDate           DateTime?    // Date de fin du cours
+
+  @@map("courses_followed")
+}
+
+model Comment {
+  id                String       @id @default(cuid())
+  content           String       // Contenu du commentaire
+  authorId          String       // ID de l'auteur
+  author            User         @relation(fields: [authorId], references: [id])
+  courseId          String       // ID du cours
+  course            Course       @relation(fields: [courseId], references: [id])
+
+  @@map("comments")
+}
+
+model Like {
+  id                String       @id @default(cuid())
+  userId            String       // ID de l'utilisateur
+  user              User         @relation(fields: [userId], references: [id])
+  courseId          String       // ID du cours
+  course            Course       @relation(fields: [courseId], references: [id])
+
+  @@map("likes")
+}
+
+model Message {
+  id                String       @id @default(cuid())
+  content           String       // Contenu du message
+  senderId          String       // ID de l'expéditeur
+  sender            User         @relation(name: "SentMessages", fields: [senderId], references: [id])
+  receiverId        String       // ID du destinataire
+  receiver          User         @relation(name: "ReceivedMessages", fields: [receiverId], references: [id])
+  sentAt            DateTime     @default(now()) // Date d'envoi du message
+
+  @@map("messages")
+}
+
+model Notification {
+  id                String       @id @default(cuid())
+  content           String       // Contenu de la notification
+  userId            String       // ID de l'utilisateur
+  user              User         @relation(fields: [userId], references: [id])
+  sentAt            DateTime     @default(now()) // Date d'envoi de la notification
+
+  @@map("notifications")
+}
