@@ -2,6 +2,7 @@ import { LoginForm } from "@/components/auth/form-login";
 import { Social } from "@/components/auth/social";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function Login() {
     
@@ -19,7 +20,10 @@ export default function Login() {
                     <span className=" px-2">ou</span>
                     <span className=" bg-slate-300 h-[0.5px] w-full"></span>
                  </div>
-            <LoginForm/>
+                 <Suspense>
+                   <LoginForm/> 
+                 </Suspense>
+            
                     <div className=" text-sm text-center mt-4">
                         <span>Vous n'avez pas de compte ?</span>
                         <Button variant="link" className=" text-blue-400"><Link href="/auth/register" >S'inscrire</Link></Button> 

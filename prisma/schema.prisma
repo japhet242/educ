@@ -18,7 +18,7 @@ model User {
   email             String?      @unique // Email de l'utilisateur
   emailVerified     DateTime?    @map("email_verified") // Date de vérification de l'email
   image             String?      // Photo de profil de l'utilisateur
-  password          String       // Mot de passe de l'utilisateur
+  password          String?       // Mot de passe de l'utilisateur
   role              Role         @default(STUDENT) // Rôle de l'utilisateur
   plan              Plan         @default(FREE) // Plan d'abonnement de l'utilisateur
   createdAt         DateTime     @default(now()) // Date d'inscription de l'utilisateur
@@ -61,7 +61,7 @@ model Account {
 model VerificationToken {
   email String @unique  // Identifiant (par exemple, email)
   token      String // Token de vérification
-  expires    DateTime // Date d'expiration du token
+  expires    String // Date d'expiration du token
 
    @@unique([email, token])
   @@map("verificationtokens")
@@ -69,7 +69,7 @@ model VerificationToken {
 model VesetEmailToken {
   email String @unique // Identifiant (par exemple, email)
   token      String // Token de vérification
-  expires    DateTime // Date d'expiration du token
+  expires    String // Date d'expiration du token
 
   @@unique([email, token])
   @@map("VesetEmailToken")

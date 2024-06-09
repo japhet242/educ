@@ -8,10 +8,10 @@ const session = useSession()
 
   return (
     <div>
-      {JSON.stringify(session.data?.user)}
-      <Button>Click me</Button>
+      welcome to dashboard
+      
      <button onClick={() => signOut()}>Sign Out</button>
-     <Button><Link href="/dashboard"> du Tableau de Bord </Link></Button>
+
     </div>
   )
 }

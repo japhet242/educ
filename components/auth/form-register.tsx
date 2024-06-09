@@ -15,14 +15,19 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { registerSchema } from "@/zodschema/zod"
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useMutation } from "@tanstack/react-query"
 import { loginAction } from "@/actions/login-action"
-
+import { registerAction } from "@/actions/register-action"
+import { toast } from "../ui/use-toast"
+import { ToastAction } from "@/components/ui/toast"
 
 
 export function RegisterForm() {
   const [isPending, startTransition] = useTransition();
+  const [succes,setSucces] = useState<string|undefined>("")
+  const [error,setError] = useState<string|undefined>("")
+  console.log(error)
   // 1. Define your form.
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -34,10 +39,28 @@ export function RegisterForm() {
   })
   const mutation = useMutation({
     mutationFn:async (values: z.infer<typeof registerSchema>) =>{
-        const data = loginAction(values)
+        const data =await registerAction(values)
+        setSucces(data?.success)
+        setError(data?.error)
+       
     }
   })
-
+  //message toast pour l'erreur
+  if (error !== "" && error !==undefined  ) {
+    toast({
+   variant:"destructive",
+   title: "Erreur",
+   description: error,
+ })
+ }
+ //message toast pour le succes
+ if (succes !== "" && succes !==undefined  ) {
+  toast({
+ variant:"succes", 
+ title: "Succes",
+ description: succes,
+})
+}
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof registerSchema>) {
     // Do something with the form values.
@@ -49,7 +72,7 @@ export function RegisterForm() {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
       <FormField
           control={form.control}
           name="name"

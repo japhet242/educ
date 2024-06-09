@@ -14,37 +14,30 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { loginSchema } from "@/zodschema/zod"
+import { newpassworSchema } from "@/zodschema/zod"
 import { useState, useTransition } from 'react';
 import { useMutation } from "@tanstack/react-query"
 import { loginAction } from "@/actions/login-action"
 import { toast } from "../ui/use-toast"
 import { useSearchParams } from "next/navigation"
-import Link from "next/link"
+import { resetAction } from "@/actions/passwordreset-action"
+import { confirmReset } from "@/actions/password-logicreset-action"
 
 
-export function LoginForm() {
+export function NewpasswordForm() {
   const [isPending, startTransition] = useTransition();
   const [succes,setSucces] = useState<string|undefined>("")
   const [error,setError] = useState<string|undefined>("")
   const params = useSearchParams()
-  const geterror= params.get("error")
+  const getToken= params.get("token")
   // 1. Define your form.
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof newpassworSchema>>({
+    resolver: zodResolver(newpassworSchema),
     defaultValues: {
-      email: "",
-      password:""
+      password: "",
     },
   })
-  const mutation = useMutation({
-    mutationFn:async (values: z.infer<typeof loginSchema>) =>{
-        const data = await loginAction(values)
-        setSucces(data?.success)
-        setError(data?.error)
-       
-    }
-  })
+
    //message toast pour l'erreur
    if (error !== "" && error !==undefined  ) {
     toast({
@@ -61,19 +54,17 @@ export function LoginForm() {
  description: succes,
 })
 }
- //message toast pour signialer qu'un compte existe deja
- if (geterror==="OAuthAccountNotLinked" ) {
-  toast({
- variant:"destructive",
- title: "Erreur",
- description: "un compte existe deja avec cet addresse email essai avec un autre fournisseur",
-})
-}
 
+const mutation = useMutation({
+    mutationFn:async (values: z.infer<typeof newpassworSchema>) =>{
+        const data = await confirmReset({token:getToken?.toString(),password:values})
+        setSucces(data?.success)
+        setError(data?.error)
+       
+    }
+  })
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: z.infer<typeof newpassworSchema>) {
     startTransition( async () => {
       await mutation.mutateAsync(values)
     });
@@ -81,26 +72,13 @@ export function LoginForm() {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
+              <FormLabel>Nouveau mot de passe</FormLabel>
               <FormControl>
                 <Input placeholder="********" {...field} />
               </FormControl>
@@ -108,8 +86,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button  variant="link" className=" text-blue-400" ><Link href="/auth/resetpassword" >Mot de passe oublier</Link></Button> 
-        <Button type="submit" className=" w-full text-white" variant={"custum"}>se connecter</Button>
+        <Button type="submit" className=" w-full text-white" variant={"custum"}>Continuer</Button>
       </form>
     </Form>
   )

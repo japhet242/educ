@@ -14,37 +14,29 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { loginSchema } from "@/zodschema/zod"
+import { RessetSchema } from "@/zodschema/zod"
 import { useState, useTransition } from 'react';
 import { useMutation } from "@tanstack/react-query"
 import { loginAction } from "@/actions/login-action"
 import { toast } from "../ui/use-toast"
 import { useSearchParams } from "next/navigation"
-import Link from "next/link"
+import { resetAction } from "@/actions/passwordreset-action"
 
 
-export function LoginForm() {
+export function ResetForm() {
   const [isPending, startTransition] = useTransition();
   const [succes,setSucces] = useState<string|undefined>("")
   const [error,setError] = useState<string|undefined>("")
   const params = useSearchParams()
   const geterror= params.get("error")
   // 1. Define your form.
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof RessetSchema>>({
+    resolver: zodResolver(RessetSchema),
     defaultValues: {
       email: "",
-      password:""
     },
   })
-  const mutation = useMutation({
-    mutationFn:async (values: z.infer<typeof loginSchema>) =>{
-        const data = await loginAction(values)
-        setSucces(data?.success)
-        setError(data?.error)
-       
-    }
-  })
+ 
    //message toast pour l'erreur
    if (error !== "" && error !==undefined  ) {
     toast({
@@ -69,9 +61,17 @@ export function LoginForm() {
  description: "un compte existe deja avec cet addresse email essai avec un autre fournisseur",
 })
 }
+const mutation = useMutation({
+    mutationFn:async (values: z.infer<typeof RessetSchema>) =>{
+        const data = await resetAction(values)
+        setSucces(data?.success)
+        setError(data?.error)
+       
+    }
+  })
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof loginSchema>) {
+  function onSubmit(values: z.infer<typeof RessetSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     startTransition( async () => {
@@ -81,7 +81,7 @@ export function LoginForm() {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="email"
@@ -95,21 +95,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
-              <FormControl>
-                <Input placeholder="********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button  variant="link" className=" text-blue-400" ><Link href="/auth/resetpassword" >Mot de passe oublier</Link></Button> 
-        <Button type="submit" className=" w-full text-white" variant={"custum"}>se connecter</Button>
+        <Button type="submit" className=" w-full text-white" variant={"custum"}>Continuer</Button>
       </form>
     </Form>
   )

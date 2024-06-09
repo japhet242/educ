@@ -9,6 +9,8 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 import { Toaster } from "@/components/ui/toaster"
+import { SessionProvider } from "next-auth/react"
+
 const queryClient = new QueryClient()
 
 const fontSans = FontSans({
@@ -24,11 +26,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <QueryClientProvider client={queryClient}>
-
+      <SessionProvider>
+     
       <body  className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-background font-sans antialiased ",
           fontSans.variable
         )}>{children}</body>
+    </SessionProvider>
+     
         
     </QueryClientProvider>
       
