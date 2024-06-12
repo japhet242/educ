@@ -15,3 +15,7 @@ export const loginSchema = z.object({
   export const newpassworSchema = z.object({
     password :z.string().min(5, { message: "Must be 5 or more characters long" })
   })
+  export const  searchSchema = z.object({
+    name:z.string()
+  })
+ 
