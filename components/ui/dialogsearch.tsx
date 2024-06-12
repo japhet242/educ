@@ -19,7 +19,7 @@ export function DialogSearchButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
+        <Button variant="outline">recherche</Button>
       </DialogTrigger>
       <DialogContent className=" w-full">
         <SearhForm/>

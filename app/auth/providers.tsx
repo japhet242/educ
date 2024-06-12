@@ -1,7 +1,6 @@
 "use client"
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google"
-import "./globals.css";
 import { cn } from "@/lib/utils"
 import {
   QueryClient,
@@ -10,32 +9,32 @@ import {
 } from '@tanstack/react-query'
 import { Toaster } from "@/components/ui/toaster"
 import { SessionProvider } from "next-auth/react"
-
+import "../globals.css";
 const queryClient = new QueryClient()
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+}) 
 
-export default function RootLayout({
+export default function Providers({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <QueryClientProvider client={queryClient}>
+      <body>
+        <QueryClientProvider client={queryClient}>
       <SessionProvider>
-     
-      <body  className={cn(
+      <div  className={cn(
           "min-h-screen bg-background font-sans antialiased ",
           fontSans.variable
-        )}>{children}</body>
+        )}>{children}</div>
     </SessionProvider>
-     
-        
     </QueryClientProvider>
+      </body>
+      
       
     </html>
   );

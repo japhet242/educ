@@ -1,16 +1,33 @@
-import { Toaster } from "@/components/ui/toaster"
- 
-export default function Layout({  children,
+import type { Metadata } from "next";
+import { Inter as FontSans } from "next/font/google"
+import "../globals.css";
+import { cn } from "@/lib/utils"
+import Providers from "./providers";
+import { url } from "inspector";
+
+
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
+export const metadata: Metadata = {
+  title: {
+    template: 'Acme Dashboard',
+    default: 'educ',
+  },
+  description: 'The official Next.js Learn Dashboard built with App Router.',
+  icons:"/favicon.ico"
+};
+export default function RootLayout({
+  children,
 }: Readonly<{
   children: React.ReactNode;
-}> ) {
+}>) {
   return (
     <html lang="en">
-      <head />
       <body>
-        <main>{children}</main>
-        <Toaster />
+       <Providers children={children}/>
       </body>
     </html>
-  )
+  );
 }

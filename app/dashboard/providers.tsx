@@ -39,18 +39,18 @@ const sessionData = session.data?.user
         </div>
         <div className=" w-full  ">
           <div className=" h-[64px] w-full md:fixed bg-white md:ml-[284px] md:w-[980px] shadow-md rounded-s-md flex items-center px-4 justify-between 2xl:w-[1090px]" >
-            <div className="md:hidden">
-               <SideBarMobile/> 
-            </div>
-            <div>
-                <div className=" md:hidden">
-                  <DialogSearchButton/>
-                </div>
-            </div>
             <div>
             <div className=" hidden md:block">
                 <SearhForm/>
               </div>
+            <div className="md:hidden">
+               <SideBarMobile/> 
+            </div>
+            </div>
+            <div className=" flex items-center space-x-4">
+            <div className=" md:hidden">
+                  <DialogSearchButton/>
+                </div>
             <AvatarDemo avatar={sessionData?.image ?? ""}/>
             </div>
 
