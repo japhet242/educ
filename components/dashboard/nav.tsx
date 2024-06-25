@@ -13,6 +13,8 @@ import { FaUserPlus } from "react-icons/fa6";
 import { FaSignOutAlt } from "react-icons/fa";
 import { FaCog } from "react-icons/fa";
 import { signOut } from "next-auth/react";
+import { FaUsersCog } from "react-icons/fa";
+
 export function Navigation() {
     return(
         <nav className=" md:mt-[66px] space-y-2">
@@ -54,32 +56,38 @@ export function Navigation() {
             </Button>
             <Button variant="ghost" className=" w-full space-x-4 justify-start text-lg">
             <FaEdit  size={24}/>
-                <Link href="#">
+                <Link href="/dashboard/gestions-cours">
                 Gestion des cours
                 </Link>
             </Button>
             <Button variant="ghost" className=" w-full space-x-4 justify-start text-lg">
             <FaChartBar size={24}/>
                 <Link href="#">
-                Statistiques et rapports
+                Statistiques
                 </Link>
             </Button>
             <Button variant="ghost" className=" w-full space-x-4 justify-start text-lg">
             <GiTeacher size={24}/>
-                <Link href="#">
+                <Link href="/dashboard/mes-cours">
                 Mes cours
                 </Link>
             </Button>
             <Button variant="ghost" className=" w-full space-x-4 justify-start text-lg">
             <FaUserPlus size={24}/>
                 <Link href="#">
-               Demandes d'inscription
+               Demandes
                 </Link>
             </Button>
             <Button variant="ghost" className=" w-full space-x-4 justify-start text-lg">
             <FaCog size={24}/>
                 <Link href="#">
                 Paramètres
+                </Link>
+            </Button>
+            <Button variant="ghost" className=" w-full space-x-4 justify-start text-lg">
+            <FaUsersCog size={24}/>
+                <Link href="/dashboard/utilisateurs">
+               Utilisateurs
                 </Link>
             </Button>
             <Button variant="ghost" className=" w-full space-x-4 justify-start text-lg" onClick={()=>signOut()}>

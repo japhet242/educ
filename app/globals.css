@@ -64,6 +64,26 @@
       --input: 217.2 32.6% 17.5%;
       --ring: 212.7 26.8% 83.9%;
     }
+    h1 {
+      @apply text-2xl font-bold;
+    }
+    h2 {
+      @apply text-xl font-bold;
+    }
+    h3 {
+      @apply text-lg font-bold;
+    }
+    ul, ol {
+      @apply list-disc pl-5;
+    }
+  
+    ol {
+      @apply list-decimal;
+    }
+  
+    li {
+      @apply mb-2;
+    }
   }
 
   @layer base {

@@ -33,7 +33,7 @@ model User {
   receivedMessages  Message[]    @relation("ReceivedMessages")
   notifications     Notification[]
   accounts          Account[]
-
+  createdCourses    Course[]     @relation("UserCourses") // Ajouté: Relation avec les cours créés
   @@map("users")
 }
 
@@ -85,24 +85,53 @@ enum Plan {
   FREE // Plan gratuit
   PREMIUM // Plan premium
 }
-
 model Course {
   id                String       @id @default(cuid())
-  title             String       // Titre du cours
-  description       String       // Description du cours
-  content           String       // Contenu du cours
+  title             String       @db.Text  // Titre du cours
+  description       String?      @db.Text       // Description du cours
+  content           String?      @db.Text// Contenu du cours
   isFree            Boolean      @default(true) // Le cours est-il gratuit
   price             Float?       // Prix du cours (pour les cours premium)
-  category          String       // Catégorie du cours
-  level             String       // Niveau du cours
+  category          String?      // Catégorie du cours
+  level             String?       // Niveau du cours
   comments          Comment[]
   likes             Like[]
+  isPublished       Boolean @default(false)   
   photo1            String?      // Photo optionnelle du cours 1
-  photo2            String?      // Photo optionnelle du cours 2
-  photo3            String?      // Photo optionnelle du cours 3
+  photo2            String?      // Photo optionnelle du cours 2     // Photo optionnelle du cours 3
   followedBy        CourseFollowed[]
+  chapters          Chapter[]    // Les chapitres du cours
+  instructorId      String       // Ajouté: Champ pour l'ID de l'instructeur
+  instructor        User         @relation(fields: [instructorId], references: [id], name: "UserCourses") // Ajouté: Relation avec le modèle User
 
   @@map("courses")
+}
+model Category {
+  id    String    @id @default(cuid())
+  name  String
+}
+model Chapter {
+  id                String       @id @default(cuid())
+  title             String       @db.Text
+  content           String?      @db.Text
+  description       String?     @db.Text
+  video             String?
+  videoyoutube      String?
+  isFree            Boolean      @default(true)
+  courseId          String
+  course            Course       @relation(fields: [courseId], references: [id])
+  muxData           muxData?
+
+  @@map("chapters")
+}
+model muxData {
+  id             String  @id @default(cuid())
+  chapterId       String @unique
+  assetId         String
+  playbackId       String?
+  chapter         Chapter @relation(fields: [chapterId],references: [id])
+  @@map("muxData")
+
 }
 
 model CourseFollowed {

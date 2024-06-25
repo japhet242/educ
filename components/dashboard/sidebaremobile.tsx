@@ -10,7 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet" 
 import { FcReadingEbook } from "react-icons/fc";
 import { Navigation } from "./nav";
 
@@ -32,14 +32,9 @@ export function SideBarMobile() {
           <SheetTitle className="text-white">Tableau de Bord</SheetTitle>
          
         </SheetHeader>
-        <div className="grid gap-4 py-2">
+        <div className="grid gap-4 py-2 overflow-auto">
           <Navigation/>
         </div>
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
-          </SheetClose>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   )
